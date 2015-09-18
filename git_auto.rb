@@ -32,6 +32,19 @@ require "open3"
       ret["o"] = o_str
     return ret
   end
+  # 2015-09-18: create
+  # tmp method
+  def get_y_or_n( question=nil )
+    print question
+    #print "\ngit add #{m_file}? (answer y/n): "
+    answer = gets.chomp
+    while (answer != "y") && (answer != "n")
+      print "  please answer by y or n: "
+      answer = gets.chomp
+    end
+    return answer
+  end
+
 
 # MAIN
   gstat = popen3_wrap( "git status" )
@@ -39,23 +52,22 @@ require "open3"
   puts "Check: git status"
   puts "git status (stdout) line num: #{gstat["o"].length}"
 
+=begin
+  is_mod_file = "Changes not staged for commit"
   m_kword = "#\tmodified:   "
   gstat["o"].each_with_index do | line, n|
     if line.include?(m_kword)
       m_file = line.split(m_kword)[1].chomp
       puts "file: #{m_file} is modified."
       gdiff = popen3_wrap("git diff #{m_file}")
-      gdiff["o"].each do | line |
-        puts "    #{line}"
-      end
-      print "\ngit add #{m_file}? (answer y/n): "
-      answer = gets.chomp
-      while (answer != "y") && (answer != "n")
-        print "  please answer by y or n: "
-        answer = gets.chomp
-      end
+      gdiff["o"].each do | line |  puts "    #{line}"  end
+      answer = get_y_or_n( "\ngit add #{m_file}? (answer y/n): " )
     end
   end
+=end
+  gstat["o"].each do | line | p line end
+  untracked_kword = "Untracked files"
+
 
 puts "End of program #{$0}"
 
