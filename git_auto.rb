@@ -17,25 +17,45 @@ require "open3"
 #   - 
 #   - 
 
+# Define Methods
 
-o_str = Array(1)
-Open3.popen3("git status") do | stdin, stdout, stderr, wait_thread|
-  stdout.each_with_index do |line,n|
-    o_str[n] = line
+  # 2015-09-18: create
+  # under construction
+  def popen3_wrap( cmd )
+    o_str = Array(1)
+    Open3.popen3( cmd ) do | stdin, stdout, stderr, wait_thread|
+      stdout.each_with_index do |line,n|
+        o_str[n] = line
+      end
+    end
+    ret = {"key_meaning"=>"i: stdin, o: stdout, e: stderr, w: wait_thread"}
+      ret["o"] = o_str
+    return ret
   end
-  #p $? #=> #<Process::Status: pid=44292,exited(0)>
-end
 
-puts "Check: git status"
-puts "o_str line num: #{o_str.length}"
-m_kword = "#\tmodified:   "
-  o_str.each_with_index do | line, n|
+# MAIN
+  gstat = popen3_wrap( "git status" )
+
+  puts "Check: git status"
+  puts "git status (stdout) line num: #{gstat["o"].length}"
+
+  m_kword = "#\tmodified:   "
+  gstat["o"].each_with_index do | line, n|
     if line.include?(m_kword)
       m_file = line.split(m_kword)[1].chomp
       puts "file: #{m_file} is modified."
-      # show git diff & ask git add or not
+      gdiff = popen3_wrap("git diff #{m_file}")
+      gdiff["o"].each do | line |
+        puts "    #{line}"
+      end
+      print "\ngit add #{m_file}? (answer y/n): "
+      answer = gets.chomp
+      while (answer != "y") && (answer != "n")
+        print "  please answer by y or n: "
+        answer = gets.chomp
+      end
     end
   end
 
-
+puts "End of program #{$0}"
 
