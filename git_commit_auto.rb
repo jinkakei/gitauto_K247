@@ -1,4 +1,4 @@
-
+#!/usr/bin/ruby
 # 2015-09-17: create
 require "open3"
 # ref: http://qiita.com/tyabe/items/56c9fa81ca89088c5627
@@ -46,39 +46,56 @@ require "open3"
     return answer
   end
 
+  # 2015-09-19: create
+  #   tmp method
+  def get_lnum( fname )
+    return popen3_wrap("wc -l #{fname}")["o"][0].split(" ")[0].to_i
+  end # def get_linenum( fname )
+
 
 # MAIN
-  gstat = popen3_wrap( "git status" )
-
-  puts "Check: git status"
-  puts "git status (stdout) line num: #{gstat["o"].length}"
-
-  #is_mod_file = "#Changes not staged for commit\n"
-  # cannot distinct by bellow command
-    #p gstat["o"].include?(is_mod_file)
-  m_kword = "#\tmodified:   "
+  gstat = popen3_wrap( "git status -s" )
+  puts "Check: git status -s (line num: #{gstat["o"].length})"
+  gstat.each do | line | puts line end
+  m_kword = " M "
+    # cf. "M  " means "added but not commit"
+  u_kword = "?? "
   gstat["o"].each do | line |
     if line.include?(m_kword)
       m_file = line.split(m_kword)[1].chomp
-      gdiff = popen3_wrap("git diff #{m_file}")
-      p gdiff
-      # ! ToDo: distinct m_file is already git add or not @ 2015-09-18
-=begin
       puts "file: #{m_file} is modified."
-      gdiff["o"].each do | line |  puts "    #{line}"  end
-      answer = get_y_or_n( "\ngit add #{m_file}? (answer y/n): " )
-      if answer == "y"
-        puts "git add #{m_file}"
-        gadd = popen3_wrap("git add #{m_file}")
-      #  gadd["o"].each do | line |  puts "    #{line}"  end
+      gdiff = popen3_wrap("git diff #{m_file}")
+      lnum = get_lnum(m_file)
+      if lnum < 16
+        gdiff["o"].each do | line |  puts "    #{line}"  end
       else
-        puts "#{m_file} was modified but not added"
+        answer = get_y_or_n( "\nDisplay #{m_file}(#{lnum}line)?: " )
+        gdiff["o"].each do | line |  puts "    #{line}"  end if answer == "y"
       end
-=end
+      answer = get_y_or_n( "\ngit add modified #{m_file}? (answer y/n): " )
+      if answer == "y"
+        puts "git add #{m_file}"; print "\n\n\n"
+        gadd = popen3_wrap("git add #{m_file}")
+      else
+        puts "#{m_file} was modified but not added"; print "\n\n\n"
+      end
     end
-  end
-#  gstat["o"].each do | line | p line end
-#  untracked_kword = "Untracked files"
+    if line.include?(u_kword)
+      u_file = line.split(u_kword)[1].chomp
+      puts "file: #{u_file} is untracked."
+      cret = popen3_wrap("cat #{u_file}")
+      cret["o"].each do | line |  puts "    #{line}"  end
+      answer = get_y_or_n( "\ngit add untracked #{u_file}? (answer y/n): " )
+      if answer == "y"
+        puts "git add #{u_file}"; print "\n\n\n"
+        gadd = popen3_wrap("git add #{u_file}")
+      else
+        puts "#{u_file} was untracked but not added"; print "\n\n\n"
+      end
+    end
+  end # gstat[o].each do 
+
+
 
 
 puts "End of program #{$0}"
