@@ -112,6 +112,7 @@ require "open3"
   if gstat[0] == 1
     puts "nothing to commit"
   else
+#=begin
     puts "files to commit"
     gstat.each do | line |
       if gs_kwords.include?(line[0..2])
@@ -127,14 +128,14 @@ require "open3"
         end
       end
     end # gstat.each do
+#=end
     gstat2 = popen3_wrap( "git status -s" )["o"]
     puts "Updated git status -s"
     gstat2.each do | line | puts line end
       answer = get_y_or_n( "\ngit commit? (answer y/n): " )
       if answer == "y"
         print "  input message:"; msg = gets.chomp
-        #msg = msg + " (" + Time.now.to_s + ")"
-        msg = msg + " " + Time.now.to_s
+        msg ="\" #{msg}  ( #{Time.now.to_s} )\""
         ret = popen3_wrap("git commit -m #{msg}")
           ret["o"].each do | l | puts l end
           ret["e"].each do | l | puts l end
