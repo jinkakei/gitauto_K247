@@ -96,6 +96,36 @@ require "open3"
       return popen3_wrap("wc -l #{fname}")["o"][0].split(" ")[0].to_i
     end # def get_linenum( fname )
 
+  # 2015-09-20: separate
+  def gadd_interact( fname, gstat)
+    answer = get_y_or_n( "\n  git add #{gstat} #{fname}? (answer y/n): " )
+    if answer == "y"
+      puts "  #{fname} is git added"; print "\n\n\n"
+      ret = popen3_wrap("git add #{fname}")
+    else
+      puts "  #{fname} is #{gstat} but not added"
+      print "\n\n\n"
+    end
+  end 
+
+  # 2015-09-20: separate
+  def gcommit_interact( arg=nil )
+    answer = get_y_or_n( "\ngit commit? (answer y/n): " )
+    if answer == "y"
+      print "  input message:"; msg = gets.chomp
+      msg ="\" #{msg}  ( #{Time.now.to_s} )\""
+      ret = popen3_wrap("git commit -m #{msg}")
+      if ret["e"][0] == 1
+        ret["o"].each do |line| puts line end
+      else
+        puts "git commit failed"
+        ret["e"].each do |line| puts line end
+      end
+    else
+      puts "  donot git commit" 
+      print "\n\n\n"
+    end # if answer == "y"
+  end
 
 
 
@@ -116,34 +146,13 @@ require "open3"
       if gs_kwords.include?(line[0..2])
         fname, gst = get_fname_and_gstate( line )
         display_contents( fname, gst )
-        answer = get_y_or_n( "\n  git add #{gst} #{fname}? (answer y/n): " )
-        if answer == "y"
-          puts "  #{fname} is git added"; print "\n\n\n"
-          ret = popen3_wrap("git add #{fname}")
-        else
-          puts "  #{fname} is #{gst} but not added"
-          print "\n\n\n"
-        end
+        gadd_interact( fname, gst)
       end
     end # gstat.each do
     gstat2 = popen3_wrap( "git status -s" )["o"]
     puts "Updated git status -s"
     gstat2.each do | line | puts line end
-      answer = get_y_or_n( "\ngit commit? (answer y/n): " )
-      if answer == "y"
-        print "  input message:"; msg = gets.chomp
-        msg ="\" #{msg}  ( #{Time.now.to_s} )\""
-        ret = popen3_wrap("git commit -m #{msg}")
-        if ret["e"][0] == 1
-          ret["o"].each do |line| puts line end
-        else
-          puts "git commit failed"
-          ret["e"].each do |line| puts line end
-        end
-      else
-        puts "  #{fname} is #{gst} but not added"
-        print "\n\n\n"
-      end
+    gcommit_interact
   end # if gstat[0] == 1
 
 
