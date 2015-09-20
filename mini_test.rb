@@ -8,8 +8,14 @@ def popen3_wrap( cmd )
   o_str = Array(1)
   e_str = Array(1)
   Open3.popen3( cmd ) do | stdin, stdout, stderr, wait_thread|
-    #stdin.write "komehato@0626"
+    #stdin.write "MYPASSWD" # donot work
     #stdin.close
+    #stdin.gets #=> Error: "not opened for reading"
+    p stdin
+    puts stdin
+    #p wait_thread
+    puts wait_thread
+    #wait_thread.write "MYPASSWD" # Undefined Method "write"
     stdout.each_with_index do |line,n|
       o_str[n] = line
     end
@@ -23,7 +29,8 @@ def popen3_wrap( cmd )
   return ret
 end
 
-gstat = popen3_wrap("git push -v origin master:master")
+#gstat = popen3_wrap("git push -v origin master:master")
+gstat = popen3_wrap("git remote show origin")
  puts "STDOUT:"; gstat["o"].each do |line| puts line end
  puts "STDERR:"; gstat["e"].each do |line| puts line end
 
