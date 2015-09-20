@@ -118,14 +118,27 @@ require "open3"
         display_contents( fname, gst )
         answer = get_y_or_n( "\n  git add #{gst} #{fname}? (answer y/n): " )
         if answer == "y"
-          puts "  #{fname} git added"; print "\n\n\n"
-          #gadd = popen3_wrap("git add #{fname}")
+          puts "  #{fname} is git added"; print "\n\n\n"
+          ret = popen3_wrap("git add #{fname}")
         else
-          puts "  #{fname} was #{gst} but not added"
+          puts "  #{fname} is #{gst} but not added"
           print "\n\n\n"
         end
       end
-    end # gstat.each do 
+    end # gstat.each do
+    gstat2 = popen3_wrap( "git status -s" )["o"]
+    puts "Updated git status -s"
+    gstat2.each do | line | puts line end
+      answer = get_y_or_n( "\ngit commit? (answer y/n): " )
+      if answer == "y"
+        print "  input message:"; msg = gets.chomp
+        msg = msg + " (" + Time.now.to_s + ")"
+        p msg
+        ret = popen3_wrap("git commit -m #{msg}")
+      else
+        puts "  #{fname} is #{gst} but not added"
+        print "\n\n\n"
+      end
   end # if gstat[0] == 1
 
 
