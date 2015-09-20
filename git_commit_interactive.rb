@@ -101,13 +101,12 @@ require "open3"
 
 # MAIN
 # 2015-09-17~: create
-# git add automatic
+# git commit interactive
 # ToDo
-#   - merge "Modified", "Untracked"
-#   - use "Renamed"
 #   - 
   gstat = popen3_wrap( "git status -s" )["o"]
   puts "Check: git status -s (line num: #{gstat.length})"
+  gstat.each do |line| puts line end
   gs_kwords = [" M ", "MM ", "RM ", "?? "]
   if gstat[0] == 1
     puts "nothing to commit"
