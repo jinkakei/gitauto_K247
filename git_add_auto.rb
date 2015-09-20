@@ -21,15 +21,16 @@ require "open3"
   # under construction
   def popen3_wrap( cmd )
     o_str = Array(1)
+    e_str = Array(1)
     w = 0
     Open3.popen3( cmd ) do | stdin, stdout, stderr, wait_thread|
-      stdout.each_with_index do |line,n|
-        o_str[n] = line
-      end
+      stdout.each_with_index do |line,n| o_str[n] = line end
+      stderr.each_with_index do |line,n| e_str[n] = line end
       w = wait_thread
     end
     ret = {"key_meaning"=>"i: stdin, o: stdout, e: stderr, w: wait_thread"}
       ret["o"] = o_str
+      ret["e"] = e_str
     return ret
   end
 
@@ -132,9 +133,11 @@ require "open3"
       answer = get_y_or_n( "\ngit commit? (answer y/n): " )
       if answer == "y"
         print "  input message:"; msg = gets.chomp
-        msg = msg + " (" + Time.now.to_s + ")"
-        p msg
+        #msg = msg + " (" + Time.now.to_s + ")"
+        msg = msg + " " + Time.now.to_s
         ret = popen3_wrap("git commit -m #{msg}")
+          ret["o"].each do | l | puts l end
+          ret["e"].each do | l | puts l end
       else
         puts "  #{fname} is #{gst} but not added"
         print "\n\n\n"
