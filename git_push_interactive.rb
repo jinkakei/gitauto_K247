@@ -42,7 +42,7 @@ require "open3"
 
 # MAIN
 # ToDo
-#   - 
+#   - ?? "git push ~~" return stderr?? @2015-09-20
 #   - 
 grshow_orig = "git remote show origin"
 gstat = popen3_wrap( grshow_orig )
@@ -62,7 +62,7 @@ gstat = popen3_wrap( grshow_orig )
         ret["e"].each do |line| puts line end
       end
     else
-      puts "  donot git push"; print "\n\n\n"
+      puts "  not git push"; print "\n\n\n"
     end # if answer == "y"
   end
 
