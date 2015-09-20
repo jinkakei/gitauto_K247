@@ -54,12 +54,15 @@ gstat = popen3_wrap( grshow_orig )
   if gstat["o"][onum-1].include?( ff_kword )
     answer = get_y_or_n( "git push? (answer y/n): " )
     if answer == "y"
-      ret = popen3_wrap("git push -v origin master:master")
+      #ret = popen3_wrap("git push -v origin master:master")
+      ret = popen3_wrap("git push -v --dry-run origin master:master")
+  puts "STDOUT:"; ret["o"].each do |line| puts line end
+  puts "STDERR:"; ret["e"].each do |line| puts line end
       if ret["e"][0] == 1
         ret["o"].each do |line| puts line end
       else
         puts "git push failed"
-        ret["e"].each do |line| puts line end
+#        ret["e"].each do |line| puts line end
       end
     else
       puts "  not git push"; print "\n\n\n"
