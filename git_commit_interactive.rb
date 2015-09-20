@@ -11,8 +11,8 @@ require "open3"
   #   !CAUTION! return value of Open3.popen3 is different in ruby1.8 ( w is not included)
   #     ref: http://docs.ruby-lang.org/ja/search/query:open3/
 # ToDo
-#   - using IO object@2015-09-17
-#   - 
+#   - master IO object@2015-09-17
+#   - master git branch
 #   - 
 
 # Define Methods
