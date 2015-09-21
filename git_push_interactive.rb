@@ -52,6 +52,8 @@ require "open3"
     end
     return answer
   end
+
+
 # END: copied from git_commit_interactive.rb
 
 
