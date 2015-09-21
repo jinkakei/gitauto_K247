@@ -9,7 +9,9 @@ end
 
 
 exec_command( "git add --interactive" )
+  print "\n\n"
 exec_command( "git commit --interactive" )
+  print "\n\n"
 
 
 puts "End of program #{$0}"
