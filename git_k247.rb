@@ -8,9 +8,9 @@ require "open3"
 #   - master IO object@2015-09-17
 #   - master git branch
 
-# BGN: copied from git_commit_interactive.rb
-  # Modified after copy
 
+
+# common part
   # 2015-09-18: create
   # under construction
   def popen3_wrap( cmd )
@@ -45,15 +45,15 @@ require "open3"
     return answer
   end
 
-  # Modified after copy
-# END: copied from git_commit_interactive.rb
+
+# End: common part
 
 
-# MAIN
-# ToDo
-#   - ?? "git push ~~" return stderr?? @2015-09-20
-#   - 
-gstat = popen3_wrap("git remote show origin")
+
+
+def git_push_interactive( arg = nil )
+
+  gstat = popen3_wrap("git remote show origin")
   show_stdoe( gstat )
   ff_kword = "fast-forwardable"
   ud_kword = "up to date"
@@ -73,7 +73,37 @@ gstat = popen3_wrap("git remote show origin")
     #return -1
   end # if gst_push_state.include?( ff_kword )
 
+end # def git_push_interactive( arg = nil )
+
+
+
+
+def git_pull_interactive( arg = nil )
+
+  gstat = popen3_wrap("git remote show origin")
+  show_stdoe( gstat )
+  od_kword = "local out of date"
+  ud_kword = "up to date"
+  gst_push_state = gstat["o"][gstat["o"].length-1]
+  if gst_push_state.include?( od_kword )
+    answer = get_y_or_n( "git pull? (answer y/n): " )
+    if answer == "y"
+      ret = popen3_wrap("git pull")
+      show_stdoe( ret )
+    else # if answer == "y"
+      puts "  you choose not to git push"; print "\n\n\n"
+    end # if answer == "y"
+  elsif gst_push_state.include?( ud_kword )
+    puts "\n\nno need to git pull"; print "\n\n\n"
+  else
+    puts "!CATUTION! something wrong happend!(see above)"
+    #return -1
+  end # if gst_push_state.include?( od_kword )
+
+end # def git_pull_interactive( arg = nil )
+
 
 puts "ToDo: master git branch"
 puts "End of program #{$0}"
 __END__
+
