@@ -10,7 +10,16 @@ require "open3"
 
 
 module Git_K247
-# common part
+# index (ver. 2015-09-22)
+#  popen3_wrap( cmd )
+#    show_stdoe
+#  get_y_or_n
+#  git_push_interactive
+#  git_pull_interactive
+#  git_add_interactive
+#  git_commit_interactive
+#    exec_command
+
 
 # common part
   # 2015-09-18: create
@@ -47,7 +56,6 @@ module Git_K247
     return answer
   end
 
-
 # End: common part
 
 
@@ -72,9 +80,10 @@ def git_push_interactive( arg = nil )
     puts "\n\nno need to git push"; print "\n\n\n"
   else
     puts "!CATUTION! something wrong happend!(see above)"
-    #return -1
+    return -1
   end # if gst_push_state.include?( ff_kword )
 
+  return 0
 end # def git_push_interactive( arg = nil )
 
 
@@ -99,19 +108,13 @@ def git_pull_interactive( arg = nil )
     puts "\n\nno need to git pull"; print "\n\n\n"
   else
     puts "!CATUTION! something wrong happend!(see above)"
-    #return -1
+    return -1
   end # if gst_push_state.include?( od_kword )
 
+  return 0
 end # def git_pull_interactive( arg = nil )
 
 
-
-  def exec_command( cmd )
-    puts cmd
-    ret = system(cmd)
-    puts "[end]#{cmd}: #{ret}"
-    print "\n\n"
-  end
 
 def git_add_interactive
   exec_command( "git add --interactive" )
@@ -121,17 +124,26 @@ def git_commit_interactive
   exec_command( "git commit --interactive" )
 end # def git_commit_interactive
 
+  def exec_command( cmd )
+    puts cmd
+    ret = system(cmd)
+    puts "[end]#{cmd}: #{ret}"
+    print "\n\n"
+  end
 
 
 end # module Git_K247
 
-include Git_K247
 
-Git_K247.git_commit_interactive
+# How to Use Module
+#require "git_k247.rb"
+#include Git_K247
+
+#Git_K247.git_commit_interactive
 
 
 
-puts "ToDo: master git branch"
-puts "End of program #{$0}"
+#puts "ToDo: master git branch"
+#puts "End of program #{$0}"
 __END__
 
