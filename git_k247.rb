@@ -9,6 +9,8 @@ require "open3"
 #   - master git branch
 
 
+module Git_K247
+# common part
 
 # common part
   # 2015-09-18: create
@@ -101,6 +103,32 @@ def git_pull_interactive( arg = nil )
   end # if gst_push_state.include?( od_kword )
 
 end # def git_pull_interactive( arg = nil )
+
+
+
+  def exec_command( cmd )
+    puts cmd
+    ret = system(cmd)
+    puts "[end]#{cmd}: #{ret}"
+    print "\n\n"
+  end
+
+def git_add_interactive
+  exec_command( "git add --interactive" )
+end # def git_add_interactive
+
+def git_commit_interactive
+  exec_command( "git commit --interactive" )
+end # def git_commit_interactive
+
+
+
+end # module Git_K247
+
+include Git_K247
+
+Git_K247.git_commit_interactive
+
 
 
 puts "ToDo: master git branch"
