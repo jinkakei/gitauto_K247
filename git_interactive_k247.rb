@@ -70,8 +70,10 @@ gstat = popen3_wrap("git remote show origin")
     puts "\n\nno need to git push"; print "\n\n\n"
   else
     puts "!CATUTION! something wrong happend!(see above)"
-    return -1
+    #return -1
   end # if gst_push_state.include?( ff_kword )
 
+
+puts "ToDo: master git branch"
 puts "End of program #{$0}"
 __END__
