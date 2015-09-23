@@ -1,6 +1,6 @@
 #!/bin/bash
 
-ruby git_push_interactive.rb
+ruby git_push_each_gdir.rb
 
 echo "exit?(yes = 0): "; read ans
 if test ${ans} -eq 0
