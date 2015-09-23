@@ -8,9 +8,13 @@ require "open3"
 #   - master IO object@2015-09-17
 #   - master git branch
 
+# history
+#   - ~/work/gitauto_K247/git_k247.rb @ 2015-09-23
+
+
 
 module Git_K247
-# index (ver. 2015-09-22)
+# index (ver. 2015-09-23)
 #  popen3_wrap( cmd )
 #    show_stdoe
 #  get_y_or_n
